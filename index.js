@@ -3,8 +3,10 @@ let color = "green";
 let size = 5;
 let increment = 1;
 let minSize = 1;
-var drawing;
-var ctx;
+let drawing;
+let ctx;
+let colorIdx = 0;
+let colorList = ["green", "blue", "purple", "red", "orange", "yellow"];
 
 window.onload = function() {
     drawing = document.getElementById("drawing");
@@ -65,7 +67,11 @@ function startTouchDrawing(event) {
     //console.log(event);
     drawing.addEventListener("touchmove", touchDraw);
     ctx.beginPath();
+    color = colorList[colorIdx % colorList.length];
+    colorIdx += 1;
     touchDraw(event);
+    // Let's change the color with every new touch.
+
 }
 
 function touchDraw(event) {
