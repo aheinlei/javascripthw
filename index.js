@@ -62,13 +62,24 @@ function clearDrawing() {
 
 function startTouchDrawing(event) {
     console.log("Start touch drawing");
+    //console.log(event);
     drawing.addEventListener("touchmove", touchDraw);
-    console.log(event);
+    ctx.beginPath();
+    touchDraw(event);
 }
 
 function touchDraw(event) {
     console.log("Touch drawing");
-    console.log("event");
+    //console.log(event);
+    /* Only tracking one touch for now */
+    let x = event.touches[0].clientX;
+    let y = event.touches[0].clientY;
+    console.log(x + ", " + y);
+    ctx.moveTo(x-size, y);
+    ctx.fillStyle = color;
+    ctx.arc(x, y, size, 0, 2 * Math.PI, true);
+    //ctx.stroke();
+    ctx.fill();
 }
 
 function stopTouchDrawing(event) {
@@ -80,7 +91,6 @@ function startDrawing(event) {
     console.log(event.clientX + ", " + event.clientY);
     /* Useful link: https://stackoverflow.com/questions/256754/how-to-pass-arguments-to-addeventlistener-listener-function */
     drawing.addEventListener("mousemove", draw);
-    drawing.ctx = ctx;
     ctx.beginPath();
     draw(event);
 }

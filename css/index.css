@@ -4,3 +4,9 @@ canvas {
     background-color: #f8f8ff;
     border:  1px solid black;
 }
+
+h1 {
+    position: absolute;
+    left: -1000px;
+    top: -1000px;
+}
