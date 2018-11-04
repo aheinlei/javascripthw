@@ -1,13 +1,22 @@
 /* Define some variables to use in drawing and to make sizes easier to test*/
-var color = "green";
-var size = 5;
-var increment = 1;
-var minSize = 1;
-document.addEventListener("keydown", checkKey);
+let color = "green";
+let size = 5;
+let increment = 1;
+let minSize = 1;
+var drawing;
+var ctx;
+
+window.onload = function() {
+    drawing = document.getElementById("drawing");
+    ctx = drawing.getContext("2d");
+    document.addEventListener("keydown", checkKey);
+    drawing.addEventListener("mousedown", startDrawing);
+    drawing.addEventListener("mouseup", stopDrawing);
+    drawing.addEventListener("touchstart", startTouchDrawing);
+    drawing.addEventListener("touchend", stopTouchDrawing);
+};
 
 function checkKey(evt) {
-    let drawing = document.getElementById("drawing");
-    let ctx = drawing.getContext("2d");
     console.log("Key press: ");
     //console.log(evt);
     switch(evt.key) {
@@ -17,7 +26,8 @@ function checkKey(evt) {
         case "ArrowUp":
             size = size + increment;
             console.log(size);
-            //Without the beginPath, everything up to this point in the current mousemove event gets changed */
+            /* Without the beginPath, everything up to this point in the current mousemove event gets changed.
+               Putting the beginPath here allows for changing size/color in the middle of a mousemove */
             ctx.beginPath();
             break;
         case "ArrowDown":
@@ -46,21 +56,31 @@ function checkKey(evt) {
 
 function clearDrawing() {
     console.log("Clear");
-    let drawing = document.getElementById("drawing");
-    let ctx = drawing.getContext("2d");
     ctx.clearRect(0, 0, drawing.width, drawing.height);
 
+}
+
+function startTouchDrawing(event) {
+    console.log("Start touch drawing");
+    drawing.addEventListener("touchmove", touchDraw);
+    console.log(event);
+}
+
+function touchDraw(event) {
+    console.log("Touch drawing");
+    console.log("event");
+}
+
+function stopTouchDrawing(event) {
+    drawing.removeEventListener("touchmove", touchDraw);
 }
 
 function startDrawing(event) {
     console.log("Start drawing, size " + size);
     console.log(event.clientX + ", " + event.clientY);
-    let drawing = document.getElementById("drawing");
-    let ctx = drawing.getContext("2d");
     /* Useful link: https://stackoverflow.com/questions/256754/how-to-pass-arguments-to-addeventlistener-listener-function */
     drawing.addEventListener("mousemove", draw);
     drawing.ctx = ctx;
-    drawing.addEventListener("mouseup", stopDrawing);
     ctx.beginPath();
     draw(event);
 }
@@ -70,7 +90,6 @@ function draw(event) {
     let x = event.clientX;
     let y = event.clientY;
     console.log(x + ", " + y);
-    let ctx = event.currentTarget.ctx;
     ctx.moveTo(x-size, y);
     ctx.fillStyle = color;
     ctx.arc(x, y, size, 0, 2 * Math.PI, true);
